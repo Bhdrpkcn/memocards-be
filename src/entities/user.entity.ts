@@ -1,13 +1,13 @@
 import {
+  Collection,
   Entity,
+  OneToMany,
   PrimaryKey,
   Property,
-  OneToMany,
-  Collection,
 } from '@mikro-orm/core';
 
-import { CardProgress } from './card-progress.entity';
 import { Deck } from './deck.entity';
+import { CardProgress } from './card-progress.entity';
 
 @Entity()
 export class User {

@@ -1,0 +1,28 @@
+{
+  "name": "Basic EN→TR",
+  "description": "Starter English to Turkish words.",
+  "fromLanguage": "en",
+  "toLanguage": "tr",
+  "cards": [
+    { "front": "apple", "back": "elma", "difficulty": "easy" },
+    { "front": "book", "back": "kitap", "difficulty": "easy" },
+    { "front": "car", "back": "araba", "difficulty": "easy" },
+    { "front": "house", "back": "ev", "difficulty": "easy" },
+    { "front": "friend", "back": "arkadaş", "difficulty": "easy" },
+    { "front": "water", "back": "su", "difficulty": "easy" },
+    { "front": "food", "back": "yemek", "difficulty": "easy" },
+    { "front": "city", "back": "şehir", "difficulty": "easy" },
+    { "front": "school", "back": "okul", "difficulty": "easy" },
+    { "front": "door", "back": "kapı", "difficulty": "easy" },
+    { "front": "table", "back": "masa", "difficulty": "easy" },
+    { "front": "chair", "back": "sandalye", "difficulty": "easy" },
+    { "front": "sun", "back": "güneş", "difficulty": "easy" },
+    { "front": "moon", "back": "ay", "difficulty": "easy" },
+    { "front": "road", "back": "yol", "difficulty": "easy" },
+    { "front": "coffee", "back": "kahve", "difficulty": "easy" },
+    { "front": "tea", "back": "çay", "difficulty": "easy" },
+    { "front": "morning", "back": "sabah", "difficulty": "easy" },
+    { "front": "night", "back": "gece", "difficulty": "easy" },
+    { "front": "family", "back": "aile", "difficulty": "easy" }
+  ]
+}

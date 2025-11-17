@@ -6,7 +6,9 @@ import {
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
+
 import { User } from './user.entity';
+import { Language } from './language.entity';
 import { Card } from './card.entity';
 
 @Entity()
@@ -20,11 +22,11 @@ export class Deck {
   @Property({ nullable: true })
   description?: string;
 
-  @Property({ nullable: true })
-  languageFrom?: string;
+  @ManyToOne(() => Language)
+  fromLanguage!: Language;
 
-  @Property({ nullable: true })
-  languageTo?: string;
+  @ManyToOne(() => Language)
+  toLanguage!: Language;
 
   @ManyToOne(() => User, { nullable: true })
   owner?: User;

@@ -1,0 +1,28 @@
+{
+  "name": "Basic EN→FR",
+  "description": "Starter English to French words.",
+  "fromLanguage": "en",
+  "toLanguage": "fr",
+  "cards": [
+    { "front": "apple", "back": "pomme", "difficulty": "easy" },
+    { "front": "book", "back": "livre", "difficulty": "easy" },
+    { "front": "car", "back": "voiture", "difficulty": "easy" },
+    { "front": "house", "back": "maison", "difficulty": "easy" },
+    { "front": "friend", "back": "ami", "difficulty": "easy" },
+    { "front": "water", "back": "eau", "difficulty": "easy" },
+    { "front": "food", "back": "nourriture", "difficulty": "easy" },
+    { "front": "city", "back": "ville", "difficulty": "easy" },
+    { "front": "school", "back": "école", "difficulty": "easy" },
+    { "front": "door", "back": "porte", "difficulty": "easy" },
+    { "front": "table", "back": "table", "difficulty": "easy" },
+    { "front": "chair", "back": "chaise", "difficulty": "easy" },
+    { "front": "sun", "back": "soleil", "difficulty": "easy" },
+    { "front": "moon", "back": "lune", "difficulty": "easy" },
+    { "front": "road", "back": "route", "difficulty": "easy" },
+    { "front": "coffee", "back": "café", "difficulty": "easy" },
+    { "front": "tea", "back": "thé", "difficulty": "easy" },
+    { "front": "morning", "back": "matin", "difficulty": "easy" },
+    { "front": "night", "back": "nuit", "difficulty": "easy" },
+    { "front": "family", "back": "famille", "difficulty": "easy" }
+  ]
+}

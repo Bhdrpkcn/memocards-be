@@ -1,0 +1,28 @@
+{
+  "name": "Basic EN→ES",
+  "description": "Starter English to Spanish words.",
+  "fromLanguage": "en",
+  "toLanguage": "es",
+  "cards": [
+    { "front": "apple", "back": "manzana", "difficulty": "easy" },
+    { "front": "book", "back": "libro", "difficulty": "easy" },
+    { "front": "car", "back": "coche", "difficulty": "easy" },
+    { "front": "house", "back": "casa", "difficulty": "easy" },
+    { "front": "friend", "back": "amigo", "difficulty": "easy" },
+    { "front": "water", "back": "agua", "difficulty": "easy" },
+    { "front": "food", "back": "comida", "difficulty": "easy" },
+    { "front": "city", "back": "ciudad", "difficulty": "easy" },
+    { "front": "school", "back": "escuela", "difficulty": "easy" },
+    { "front": "door", "back": "puerta", "difficulty": "easy" },
+    { "front": "table", "back": "mesa", "difficulty": "easy" },
+    { "front": "chair", "back": "silla", "difficulty": "easy" },
+    { "front": "sun", "back": "sol", "difficulty": "easy" },
+    { "front": "moon", "back": "luna", "difficulty": "easy" },
+    { "front": "road", "back": "carretera", "difficulty": "easy" },
+    { "front": "coffee", "back": "café", "difficulty": "easy" },
+    { "front": "tea", "back": "té", "difficulty": "easy" },
+    { "front": "morning", "back": "mañana", "difficulty": "easy" },
+    { "front": "night", "back": "noche", "difficulty": "easy" },
+    { "front": "family", "back": "familia", "difficulty": "easy" }
+  ]
+}

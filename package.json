@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "mikro-orm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/mikro-orm",
-    "migrate:create": "npm run mikro-orm -- migration:create",
+    "migrate:create": "npm run mikro-orm -- migration:create --initial",
+    "migrate:create:blank": "npm run mikro-orm -- migration:create --blank",
     "migrate:up": "npm run mikro-orm -- migration:up",
     "migrate:down": "npm run mikro-orm -- migration:down"
   },

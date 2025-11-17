@@ -1,4 +1,13 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  OneToMany,
+  Collection,
+} from '@mikro-orm/core';
+
+import { CardProgress } from './card-progress.entity';
+import { Deck } from './deck.entity';
 
 @Entity()
 export class User {
@@ -10,6 +19,12 @@ export class User {
 
   @Property({ nullable: true })
   name?: string;
+
+  @OneToMany(() => Deck, (deck) => deck.owner)
+  decks = new Collection<Deck>(this);
+
+  @OneToMany(() => CardProgress, (progress) => progress.user)
+  cardProgress = new Collection<CardProgress>(this);
 
   @Property()
   createdAt: Date = new Date();

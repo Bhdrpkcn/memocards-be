@@ -27,6 +27,7 @@ export class CardProgress {
   @ManyToOne(() => Card)
   card!: Card;
 
+  // High-level UI status (filtering)
   @Property({ type: 'string' })
   statusKind: CardStatusKind = CardStatusKind.UNKNOWN;
 

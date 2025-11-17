@@ -22,7 +22,8 @@
     "migrate:create": "npm run mikro-orm -- migration:create --initial",
     "migrate:create:blank": "npm run mikro-orm -- migration:create --blank",
     "migrate:up": "npm run mikro-orm -- migration:up",
-    "migrate:down": "npm run mikro-orm -- migration:down"
+    "migrate:down": "npm run mikro-orm -- migration:down",
+    "seed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.6.0",

@@ -15,6 +15,86 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "language",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "code"
+          ],
+          "composite": false,
+          "keyName": "language_code_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "language_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "email": {
           "name": "email",
           "type": "varchar(255)",
@@ -115,25 +195,23 @@
           "length": 255,
           "mappedType": "string"
         },
-        "language_from": {
-          "name": "language_from",
-          "type": "varchar(255)",
+        "from_language_id": {
+          "name": "from_language_id",
+          "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
+          "nullable": false,
+          "mappedType": "integer"
         },
-        "language_to": {
-          "name": "language_to",
-          "type": "varchar(255)",
+        "to_language_id": {
+          "name": "to_language_id",
+          "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
+          "nullable": false,
+          "mappedType": "integer"
         },
         "owner_id": {
           "name": "owner_id",
@@ -191,6 +269,30 @@
       ],
       "checks": [],
       "foreignKeys": {
+        "deck_from_language_id_foreign": {
+          "constraintName": "deck_from_language_id_foreign",
+          "columnNames": [
+            "from_language_id"
+          ],
+          "localTableName": "public.deck",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.language",
+          "updateRule": "cascade"
+        },
+        "deck_to_language_id_foreign": {
+          "constraintName": "deck_to_language_id_foreign",
+          "columnNames": [
+            "to_language_id"
+          ],
+          "localTableName": "public.deck",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.language",
+          "updateRule": "cascade"
+        },
         "deck_owner_id_foreign": {
           "constraintName": "deck_owner_id_foreign",
           "columnNames": [
@@ -257,6 +359,35 @@
           "length": 255,
           "mappedType": "string"
         },
+        "difficulty": {
+          "name": "difficulty",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "order_index": {
+          "name": "order_index",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
+        },
+        "created_by_id": {
+          "name": "created_by_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -304,6 +435,19 @@
             "id"
           ],
           "referencedTableName": "public.deck",
+          "updateRule": "cascade"
+        },
+        "card_created_by_id_foreign": {
+          "constraintName": "card_created_by_id_foreign",
+          "columnNames": [
+            "created_by_id"
+          ],
+          "localTableName": "public.card",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.user",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },

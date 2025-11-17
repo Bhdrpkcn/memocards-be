@@ -1,0 +1,28 @@
+{
+  "name": "Temel TR→EN",
+  "description": "Başlangıç seviyesinde Türkçe kelimelerin İngilizce karşılıkları.",
+  "fromLanguage": "tr",
+  "toLanguage": "en",
+  "cards": [
+    { "front": "elma", "back": "apple", "difficulty": "easy" },
+    { "front": "kitap", "back": "book", "difficulty": "easy" },
+    { "front": "araba", "back": "car", "difficulty": "easy" },
+    { "front": "ev", "back": "house", "difficulty": "easy" },
+    { "front": "arkadaş", "back": "friend", "difficulty": "easy" },
+    { "front": "su", "back": "water", "difficulty": "easy" },
+    { "front": "yemek", "back": "food", "difficulty": "easy" },
+    { "front": "şehir", "back": "city", "difficulty": "easy" },
+    { "front": "okul", "back": "school", "difficulty": "easy" },
+    { "front": "kapı", "back": "door", "difficulty": "easy" },
+    { "front": "masa", "back": "table", "difficulty": "easy" },
+    { "front": "sandalye", "back": "chair", "difficulty": "easy" },
+    { "front": "güneş", "back": "sun", "difficulty": "easy" },
+    { "front": "ay", "back": "moon", "difficulty": "easy" },
+    { "front": "yol", "back": "road", "difficulty": "easy" },
+    { "front": "kahve", "back": "coffee", "difficulty": "easy" },
+    { "front": "çay", "back": "tea", "difficulty": "easy" },
+    { "front": "sabah", "back": "morning", "difficulty": "easy" },
+    { "front": "gece", "back": "night", "difficulty": "easy" },
+    { "front": "aile", "back": "family", "difficulty": "easy" }
+  ]
+}

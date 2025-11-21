@@ -13,6 +13,7 @@ export enum CardStatusKind {
   UNKNOWN = 'unknown',
   KNOWN = 'known',
   REVIEW = 'review',
+  CUSTOM = 'custom',
 }
 
 @Entity()

@@ -23,7 +23,6 @@ export class DeckService {
       populate: ['fromLanguage', 'toLanguage'],
     });
 
-    // count cards per deck in parallel
     const counts = await Promise.all(
       decks.map((deck) => this.cardRepo.count({ deck })),
     );

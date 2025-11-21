@@ -13,7 +13,7 @@ export class ProgressController {
     @Param('cardId') cardId: string,
     @Body() body: { userId: number; status: CardStatusKind },
   ) {
-    // TEMP: userId is taken from body >> Later will be taken it from JWT (req.user.id)
+    // TODO: userId is taken from body >> Later will be taken it from JWT (req.user.id)
     return this.progress.setStatus(body.userId, Number(cardId), body.status);
   }
 }

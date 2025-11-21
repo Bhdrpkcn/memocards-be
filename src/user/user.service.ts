@@ -12,19 +12,21 @@ export class UserService {
     private readonly em: EntityManager,
   ) {}
 
-  async findById(id: number): Promise<User | null> {
-    return this.userRepo.findOne({ id });
-  }
-
   async findOrCreateByEmail(email: string, name?: string): Promise<User> {
-    let user = await this.userRepo.findOne({ email });
+    const em = this.em.fork();
+
+    let user = await em.findOne(User, { email });
 
     if (!user) {
-      user = this.userRepo.create({ email, name });
-
-      await this.em.persistAndFlush(user);
+      user = em.create(User, { email, name });
+      await em.persistAndFlush(user);
     }
 
     return user;
+  }
+
+  async findById(id: number): Promise<User | null> {
+    const em = this.em.fork();
+    return em.findOne(User, { id });
   }
 }

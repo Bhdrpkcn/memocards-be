@@ -1,0 +1,165 @@
+{
+  "info": {
+    "_postman_id": "22222222-2222-2222-2222-222222222222",
+    "name": "Memo Backend – Correct Progress Routes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    },
+    {
+      "key": "deckId",
+      "value": "1"
+    },
+    {
+      "key": "cardId",
+      "value": "1"
+    },
+    {
+      "key": "randomCardId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Decks",
+      "item": [
+        {
+          "name": "Get All Decks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Deck By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{deckId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{deckId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "item": [
+        {
+          "name": "Get Cards By Deck",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{deckId}}/cards",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{deckId}}", "cards"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Progress",
+      "item": [
+        {
+          "name": "Set Card Status (Manual)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"custom\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cards/{{cardId}}/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["cards", "{{cardId}}", "progress"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Card to Custom Deck (AUTO from Deck)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.sendRequest({",
+                  "  url: pm.variables.get(\"baseUrl\") + \"/decks/\" + pm.variables.get(\"deckId\") + \"/cards\",",
+                  "  method: \"GET\"",
+                  "}, function (err, res) {",
+                  "  if (err) {",
+                  "    console.log(\"Error fetching cards:\", err);",
+                  "    return;",
+                  "  }",
+                  "",
+                  "  const cards = res.json();",
+                  "",
+                  "  if (!Array.isArray(cards) || cards.length === 0) {",
+                  "    console.log(\"No cards found for this deck\");",
+                  "    return;",
+                  "  }",
+                  "",
+                  "  const randomIndex = Math.floor(Math.random() * cards.length);",
+                  "  const randomCard = cards[randomIndex];",
+                  "",
+                  "  pm.variables.set(\"randomCardId\", randomCard.id);",
+                  "  console.log(\"Selected random card id:\", randomCard.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"custom\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cards/{{randomCardId}}/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["cards", "{{randomCardId}}", "progress"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

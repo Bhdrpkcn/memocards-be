@@ -62,7 +62,7 @@
       "name": "Cards",
       "item": [
         {
-          "name": "Get Cards By Deck",
+          "name": "Get Cards (All)",
           "request": {
             "method": "GET",
             "header": [],
@@ -70,6 +70,75 @@
               "raw": "{{baseUrl}}/decks/{{deckId}}/cards",
               "host": ["{{baseUrl}}"],
               "path": ["decks", "{{deckId}}", "cards"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cards (Known)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{deckId}}/cards?userId={{userId}}&status=known",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{deckId}}", "cards"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "status",
+                  "value": "known"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cards (Review)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{deckId}}/cards?userId={{userId}}&status=review",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{deckId}}", "cards"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "status",
+                  "value": "review"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cards (Custom)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{deckId}}/cards?userId={{userId}}&status=custom",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{deckId}}", "cards"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "status",
+                  "value": "custom"
+                }
+              ]
             }
           },
           "response": []

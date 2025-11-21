@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 
 import { CardService } from './card.service';
 import { CardResponseDto } from './dto/card-response.dto';
@@ -10,7 +10,14 @@ export class CardController {
   @Get()
   async getCardsForDeck(
     @Param('deckId', ParseIntPipe) deckId: number,
+    @Query('userId') userIdRaw?: string,
+    @Query('status') status?: string,
   ): Promise<CardResponseDto[]> {
-    return this.cards.findByDeck(deckId);
+    const userId =
+      userIdRaw !== undefined && userIdRaw !== null
+        ? Number(userIdRaw)
+        : undefined;
+
+    return this.cards.findByDeck(deckId, userId, status);
   }
 }

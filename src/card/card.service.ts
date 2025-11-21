@@ -4,6 +4,7 @@ import { EntityRepository } from '@mikro-orm/postgresql';
 
 import { Card } from '../entities/card.entity';
 import { Deck } from '../entities/deck.entity';
+import { CardStatusKind } from '../entities/card-progress.entity';
 import { CardResponseDto } from './dto/card-response.dto';
 
 @Injectable()
@@ -15,19 +16,53 @@ export class CardService {
     private readonly deckRepo: EntityRepository<Deck>,
   ) {}
 
-  async findByDeck(deckId: number): Promise<CardResponseDto[]> {
+  private mapStatusParam(status?: string): CardStatusKind | undefined {
+    if (!status) return undefined;
+    const normalized = status.toLowerCase();
+
+    switch (normalized) {
+      case 'known':
+        return CardStatusKind.KNOWN;
+      case 'review':
+        return CardStatusKind.REVIEW;
+      case 'custom':
+        return CardStatusKind.CUSTOM;
+      case 'unknown':
+        return CardStatusKind.UNKNOWN;
+      default:
+        return undefined;
+    }
+  }
+
+  async findByDeck(
+    deckId: number,
+    userId?: number,
+    status?: string,
+  ): Promise<CardResponseDto[]> {
     const deck = await this.deckRepo.findOne({ id: deckId });
 
     if (!deck) {
-      throw new NotFoundException('Deck not found');
+      throw new NotFoundException(`Deck ${deckId} not found`);
     }
 
-    const cards = await this.cardRepo.find(
-      { deck },
-      {
-        orderBy: { orderIndex: 'asc', id: 'asc' },
-      },
-    );
+    const statusEnum = this.mapStatusParam(status);
+
+    let where: any = { deck };
+
+    // .all → no userId or invalid status → return all cards
+    if (userId && statusEnum) {
+      where = {
+        deck,
+        progresses: {
+          user: userId,
+          statusKind: statusEnum,
+        },
+      };
+    }
+
+    const cards = await this.cardRepo.find(where, {
+      orderBy: { orderIndex: 'asc', id: 'asc' },
+    });
 
     return cards.map((card) => ({
       id: card.id,

@@ -34,6 +34,12 @@ export class Deck {
   @Property({ default: true })
   isPublic: boolean = true;
 
+  @Property({ default: false })
+  isCustom: boolean = false;
+
+  @ManyToOne(() => Deck, { nullable: true })
+  parentDeck?: Deck;
+
   @OneToMany(() => Card, (card) => card.deck)
   cards = new Collection<Card>(this);
 
@@ -42,10 +48,4 @@ export class Deck {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
-
-  @Property({ default: false })
-  isCustom: boolean = false;
-
-  @ManyToOne(() => Deck, { nullable: true })
-  parentDeck?: Deck;
 }

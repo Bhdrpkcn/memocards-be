@@ -232,6 +232,25 @@
           "default": "true",
           "mappedType": "boolean"
         },
+        "is_custom": {
+          "name": "is_custom",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "parent_deck_id": {
+          "name": "parent_deck_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -251,25 +270,6 @@
           "nullable": false,
           "length": 6,
           "mappedType": "datetime"
-        },
-        "is_custom": {
-          "name": "is_custom",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
-        },
-        "parent_deck_id": {
-          "name": "parent_deck_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
         }
       },
       "name": "deck",

@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20251122111105_InitialSchema extends Migration {
+export class Migration20251122114840_InitialSchema extends Migration {
 
   override async up(): Promise<void> {
     this.addSql(`create table "language" ("id" serial primary key, "code" varchar(255) not null, "name" varchar(255) not null, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
@@ -9,7 +9,7 @@ export class Migration20251122111105_InitialSchema extends Migration {
     this.addSql(`create table "user" ("id" serial primary key, "email" varchar(255) not null, "name" varchar(255) null, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
     this.addSql(`alter table "user" add constraint "user_email_unique" unique ("email");`);
 
-    this.addSql(`create table "deck" ("id" serial primary key, "name" varchar(255) not null, "description" varchar(255) null, "from_language_id" int not null, "to_language_id" int not null, "owner_id" int null, "is_public" boolean not null default true, "created_at" timestamptz not null, "updated_at" timestamptz not null, "is_custom" boolean not null default false, "parent_deck_id" int null);`);
+    this.addSql(`create table "deck" ("id" serial primary key, "name" varchar(255) not null, "description" varchar(255) null, "from_language_id" int not null, "to_language_id" int not null, "owner_id" int null, "is_public" boolean not null default true, "is_custom" boolean not null default false, "parent_deck_id" int null, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
 
     this.addSql(`create table "card" ("id" serial primary key, "deck_id" int not null, "front_text" varchar(255) not null, "back_text" varchar(255) not null, "extra_info" varchar(255) null, "difficulty" varchar(255) null, "order_index" int not null default 0, "created_by_id" int null, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
 

@@ -1,7 +1,7 @@
 {
   "info": {
     "_postman_id": "22222222-2222-2222-2222-222222222222",
-    "name": "Memo Backend – Correct Progress Routes",
+    "name": "Memo Backend – Correct Progress & Custom Decks",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -23,6 +23,10 @@
     },
     {
       "key": "randomCardId",
+      "value": ""
+    },
+    {
+      "key": "customDeckId",
       "value": ""
     }
   ],
@@ -119,29 +123,6 @@
             }
           },
           "response": []
-        },
-        {
-          "name": "Get Cards (Custom)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/decks/{{deckId}}/cards?userId={{userId}}&status=custom",
-              "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{deckId}}", "cards"],
-              "query": [
-                {
-                  "key": "userId",
-                  "value": "{{userId}}"
-                },
-                {
-                  "key": "status",
-                  "value": "custom"
-                }
-              ]
-            }
-          },
-          "response": []
         }
       ]
     },
@@ -149,7 +130,7 @@
       "name": "Progress",
       "item": [
         {
-          "name": "Set Card Status (Manual)",
+          "name": "Set Card Status (Known)",
           "request": {
             "method": "POST",
             "header": [
@@ -173,7 +154,109 @@
           "response": []
         },
         {
-          "name": "Add Card to Custom Deck (AUTO from Deck)",
+          "name": "Set Card Status (Review)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"review\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cards/{{cardId}}/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["cards", "{{cardId}}", "progress"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Custom Decks",
+      "item": [
+        {
+          "name": "List Custom Decks for Parent Deck",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{deckId}}/custom-decks?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{deckId}}", "custom-decks"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Custom Deck \"Learning\" (under parent deck)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.id) {",
+                  "  pm.variables.set(\"customDeckId\", json.id);",
+                  "  console.log(\"Saved customDeckId:\", json.id);",
+                  "} else {",
+                  "  console.log(\"No id returned from create custom deck\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"name\": \"Learning\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{deckId}}/custom-decks",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{deckId}}", "custom-decks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cards in Custom Deck (All)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/{{customDeckId}}/cards",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "{{customDeckId}}", "cards"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Random Card from Parent Deck to Custom Deck",
           "event": [
             {
               "listen": "prerequest",
@@ -218,12 +301,56 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"custom\"\n}"
+              "raw": "{\n  \"userId\": {{userId}},\n  \"sourceCardId\": {{randomCardId}}\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/cards/{{randomCardId}}/progress",
+              "raw": "{{baseUrl}}/decks/custom-decks/{{customDeckId}}/cards",
               "host": ["{{baseUrl}}"],
-              "path": ["cards", "{{randomCardId}}", "progress"]
+              "path": ["decks", "custom-decks", "{{customDeckId}}", "cards"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Card from Custom Deck",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/custom-decks/{{customDeckId}}/cards/{{cardId}}?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "decks",
+                "custom-decks",
+                "{{customDeckId}}",
+                "cards",
+                "{{cardId}}"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Custom Deck \"Learning\"",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/decks/custom-decks/{{customDeckId}}?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["decks", "custom-decks", "{{customDeckId}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
             }
           },
           "response": []

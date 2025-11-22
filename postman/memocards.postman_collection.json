@@ -162,7 +162,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"custom\"\n}"
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"known\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/cards/{{cardId}}/progress",

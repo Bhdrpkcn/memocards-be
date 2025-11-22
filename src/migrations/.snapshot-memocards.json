@@ -251,6 +251,25 @@
           "nullable": false,
           "length": 6,
           "mappedType": "datetime"
+        },
+        "is_custom": {
+          "name": "is_custom",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "parent_deck_id": {
+          "name": "parent_deck_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
         }
       },
       "name": "deck",
@@ -303,6 +322,19 @@
             "id"
           ],
           "referencedTableName": "public.user",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "deck_parent_deck_id_foreign": {
+          "constraintName": "deck_parent_deck_id_foreign",
+          "columnNames": [
+            "parent_deck_id"
+          ],
+          "localTableName": "public.deck",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.deck",
           "deleteRule": "set null",
           "updateRule": "cascade"
         }

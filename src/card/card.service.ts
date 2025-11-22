@@ -25,8 +25,6 @@ export class CardService {
         return CardStatusKind.KNOWN;
       case 'review':
         return CardStatusKind.REVIEW;
-      case 'custom':
-        return CardStatusKind.CUSTOM;
       case 'unknown':
         return CardStatusKind.UNKNOWN;
       default:

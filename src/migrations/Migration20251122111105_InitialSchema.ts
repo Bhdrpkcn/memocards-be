@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20251117091725_InitialSchema extends Migration {
+export class Migration20251122111105_InitialSchema extends Migration {
 
   override async up(): Promise<void> {
     this.addSql(`create table "language" ("id" serial primary key, "code" varchar(255) not null, "name" varchar(255) not null, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
@@ -9,7 +9,7 @@ export class Migration20251117091725_InitialSchema extends Migration {
     this.addSql(`create table "user" ("id" serial primary key, "email" varchar(255) not null, "name" varchar(255) null, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
     this.addSql(`alter table "user" add constraint "user_email_unique" unique ("email");`);
 
-    this.addSql(`create table "deck" ("id" serial primary key, "name" varchar(255) not null, "description" varchar(255) null, "from_language_id" int not null, "to_language_id" int not null, "owner_id" int null, "is_public" boolean not null default true, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
+    this.addSql(`create table "deck" ("id" serial primary key, "name" varchar(255) not null, "description" varchar(255) null, "from_language_id" int not null, "to_language_id" int not null, "owner_id" int null, "is_public" boolean not null default true, "created_at" timestamptz not null, "updated_at" timestamptz not null, "is_custom" boolean not null default false, "parent_deck_id" int null);`);
 
     this.addSql(`create table "card" ("id" serial primary key, "deck_id" int not null, "front_text" varchar(255) not null, "back_text" varchar(255) not null, "extra_info" varchar(255) null, "difficulty" varchar(255) null, "order_index" int not null default 0, "created_by_id" int null, "created_at" timestamptz not null, "updated_at" timestamptz not null);`);
 
@@ -19,6 +19,7 @@ export class Migration20251117091725_InitialSchema extends Migration {
     this.addSql(`alter table "deck" add constraint "deck_from_language_id_foreign" foreign key ("from_language_id") references "language" ("id") on update cascade;`);
     this.addSql(`alter table "deck" add constraint "deck_to_language_id_foreign" foreign key ("to_language_id") references "language" ("id") on update cascade;`);
     this.addSql(`alter table "deck" add constraint "deck_owner_id_foreign" foreign key ("owner_id") references "user" ("id") on update cascade on delete set null;`);
+    this.addSql(`alter table "deck" add constraint "deck_parent_deck_id_foreign" foreign key ("parent_deck_id") references "deck" ("id") on update cascade on delete set null;`);
 
     this.addSql(`alter table "card" add constraint "card_deck_id_foreign" foreign key ("deck_id") references "deck" ("id") on update cascade;`);
     this.addSql(`alter table "card" add constraint "card_created_by_id_foreign" foreign key ("created_by_id") references "user" ("id") on update cascade on delete set null;`);

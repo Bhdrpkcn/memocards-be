@@ -42,4 +42,10 @@ export class Deck {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
+
+  @Property({ default: false })
+  isCustom: boolean = false;
+
+  @ManyToOne(() => Deck, { nullable: true })
+  parentDeck?: Deck;
 }

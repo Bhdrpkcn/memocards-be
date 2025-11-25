@@ -1,0 +1,123 @@
+{
+  "name": "Basic Words",
+  "description": "Starter words.",
+  "difficulty": "easy",
+  "cards": [
+    {
+      "en": "apple",
+      "de": "apfel",
+      "es": "manzana",
+      "fr": "pomme",
+      "tr": "elma"
+    },
+    {
+      "en": "book",
+      "de": "buch",
+      "es": "libro",
+      "fr": "livre",
+      "tr": "kitap"
+    },
+    {
+      "en": "car",
+      "de": "auto",
+      "es": "coche",
+      "fr": "coiture",
+      "tr": "araba"
+    },
+    { "en": "house", "de": "haus", "es": "casa", "fr": "maison", "tr": "ev" },
+    {
+      "en": "friend",
+      "de": "freund",
+      "es": "amigo",
+      "fr": "ami",
+      "tr": "arkadaş"
+    },
+    { "en": "water", "de": "wasser", "es": "agua", "fr": "eau", "tr": "su" },
+    {
+      "en": "food",
+      "de": "essen",
+      "es": "comida",
+      "fr": "nourriture",
+      "tr": "yemek"
+    },
+    {
+      "en": "city",
+      "de": "stadt",
+      "es": "ciudad",
+      "fr": "ville",
+      "tr": "şehir"
+    },
+    {
+      "en": "school",
+      "de": "schule",
+      "es": "escuela",
+      "fr": "école",
+      "tr": "okul"
+    },
+    {
+      "en": "door",
+      "de": "tür",
+      "es": "puerta",
+      "fr": "porte",
+      "tr": "kapı"
+    },
+    {
+      "en": "table",
+      "de": "tisch",
+      "es": "mesa",
+      "fr": "table",
+      "tr": "masa"
+    },
+    {
+      "en": "chair",
+      "de": "stuhl",
+      "es": "silla",
+      "fr": "chaise",
+      "tr": "sandalye"
+    },
+    {
+      "en": "sun",
+      "de": "sonne",
+      "es": "sol",
+      "fr": "soleil",
+      "tr": "güneş"
+    },
+    { "en": "moon", "de": "mond", "es": "luna", "fr": "lune", "tr": "ay" },
+    {
+      "en": "road",
+      "de": "straße",
+      "es": "carretera",
+      "fr": "route",
+      "tr": "yol"
+    },
+    {
+      "en": "coffee",
+      "de": "kaffee",
+      "es": "café",
+      "fr": "café",
+      "tr": "kahve"
+    },
+    { "en": "tea", "de": "tee", "es": "té", "fr": "thé", "tr": "çay" },
+    {
+      "en": "morning",
+      "de": "morgen",
+      "es": "mañana",
+      "fr": "matin",
+      "tr": "sabah"
+    },
+    {
+      "en": "night",
+      "de": "nacht",
+      "es": "noche",
+      "fr": "nuit",
+      "tr": "gece"
+    },
+    {
+      "en": "family",
+      "de": "familie",
+      "es": "familia",
+      "fr": "famille",
+      "tr": "aile"
+    }
+  ]
+}

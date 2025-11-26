@@ -1,0 +1,28 @@
+{
+  "name": "Medium Words",
+  "description": "Medium difficulty words.",
+  "difficulty": "medium",
+  "words": [
+    {
+      "en": "MED_apple",
+      "de": "MED_apfel",
+      "es": "MED_manzana",
+      "fr": "MED_pomme",
+      "tr": "MED_elma"
+    },
+    {
+      "en": "MED_book",
+      "de": "MED_buch",
+      "es": "MED_libro",
+      "fr": "MED_livre",
+      "tr": "MED_kitap"
+    },
+    {
+      "en": "MED_car",
+      "de": "MED_auto",
+      "es": "MED_coche",
+      "fr": "MED_coiture",
+      "tr": "MED_araba"
+    }
+  ]
+}

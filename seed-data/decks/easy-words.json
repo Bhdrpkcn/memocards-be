@@ -1,8 +1,8 @@
 {
-  "name": "Basic Words",
-  "description": "Starter words.",
+  "name": "Easy Words",
+  "description": "Easy difficulty words.",
   "difficulty": "easy",
-  "cards": [
+  "words": [
     {
       "en": "apple",
       "de": "apfel",

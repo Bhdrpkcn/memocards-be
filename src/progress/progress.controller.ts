@@ -4,16 +4,29 @@ import { CardStatusKind } from '../entities/card-progress.entity';
 
 import { ProgressService } from './progress.service';
 
-@Controller('cards/:cardId/progress')
+type UpdateProgressDto = {
+  userId: number;
+  fromLanguageCode: string;
+  toLanguageCode: string;
+  status: CardStatusKind;
+};
+
+@Controller('words/:wordId/progress')
 export class ProgressController {
   constructor(private readonly progress: ProgressService) {}
 
   @Post()
   async updateStatus(
-    @Param('cardId') cardId: string,
-    @Body() body: { userId: number; status: CardStatusKind },
+    @Param('wordId') wordId: string,
+    @Body() body: UpdateProgressDto,
   ) {
-    // TODO: userId is taken from body >> Later will be taken it from JWT (req.user.id)
-    return this.progress.setStatus(body.userId, Number(cardId), body.status);
+    // TODO: later userId should come from JWT (req.user.id)
+    return this.progress.setStatus(
+      body.userId,
+      Number(wordId),
+      body.fromLanguageCode,
+      body.toLanguageCode,
+      body.status,
+    );
   }
 }

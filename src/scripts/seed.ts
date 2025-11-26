@@ -1,157 +1,69 @@
 import { MikroORM } from '@mikro-orm/postgresql';
 import mikroOrmConfig from '../mikro-orm.config';
-import { Language } from '../entities/language.entity';
-import { Deck } from '../entities/deck.entity';
-import { Card, CardDifficulty } from '../entities/card.entity';
 
 import * as fs from 'fs';
 import * as path from 'path';
 
-type LanguageSeed = {
-  code: string;
-  name: string;
-};
+import { WordSet } from '../entities/word-set.entity';
+import { Word } from '../entities/word.entity';
+import { WordTranslation } from '../entities/word-translation.entity';
 
-type DeckSeedCard = {
-  front: string;
-  back: string;
-  difficulty?: string;
-};
-
-type DeckSeed = {
+type WordFile = {
   name: string;
   description?: string;
-  fromLanguage: string;
-  toLanguage: string;
-  cards: DeckSeedCard[];
+  difficulty: 'easy' | 'medium' | 'hard';
+  words: Record<string, string>[];
 };
-
-async function seedLanguages(orm: MikroORM, seedFilePath: string) {
-  const em = orm.em.fork();
-
-  const raw = fs.readFileSync(seedFilePath, 'utf-8');
-  const parsed = JSON.parse(raw) as { languages: LanguageSeed[] };
-
-  console.log('🌱 Seeding languages...');
-
-  for (const lang of parsed.languages) {
-    let language = await em.findOne(Language, { code: lang.code });
-
-    if (!language) {
-      language = em.create(Language, {
-        code: lang.code,
-        name: lang.name,
-      });
-      em.persist(language);
-      console.log(`  ➕ Language: ${lang.code} (${lang.name})`);
-    }
-  }
-
-  await em.flush();
-}
-
-async function seedDecks(orm: MikroORM, decksDir: string) {
-  const em = orm.em.fork();
-
-  const files = fs
-    .readdirSync(decksDir)
-    .filter((file) => file.endsWith('.json'));
-
-  console.log('🌱 Seeding decks & cards...');
-
-  for (const file of files) {
-    const fullPath = path.join(decksDir, file);
-    const raw = fs.readFileSync(fullPath, 'utf-8');
-    const deckSeed = JSON.parse(raw) as DeckSeed;
-
-    const fromLang = await em.findOne(Language, {
-      code: deckSeed.fromLanguage,
-    });
-    const toLang = await em.findOne(Language, {
-      code: deckSeed.toLanguage,
-    });
-
-    if (!fromLang || !toLang) {
-      console.warn(
-        `  ⚠️ Skipping deck ${deckSeed.name} – language not found (${deckSeed.fromLanguage} -> ${deckSeed.toLanguage})`,
-      );
-      continue;
-    }
-
-    let deck = await em.findOne(Deck, {
-      name: deckSeed.name,
-      fromLanguage: fromLang,
-      toLanguage: toLang,
-    });
-
-    if (!deck) {
-      deck = em.create(Deck, {
-        name: deckSeed.name,
-        description: deckSeed.description,
-        fromLanguage: fromLang,
-        toLanguage: toLang,
-        isPublic: true,
-      });
-      em.persist(deck);
-      console.log(
-        `  ➕ Deck: ${deckSeed.name} (${deckSeed.fromLanguage} → ${deckSeed.toLanguage})`,
-      );
-    }
-
-    let orderIndex = 0;
-
-    for (const cardSeed of deckSeed.cards) {
-      const existing = await em.findOne(Card, {
-        deck,
-        frontText: cardSeed.front,
-        backText: cardSeed.back,
-      });
-
-      if (existing) {
-        continue;
-      }
-
-      const difficulty =
-        cardSeed.difficulty &&
-        ['easy', 'medium', 'hard'].includes(cardSeed.difficulty)
-          ? (cardSeed.difficulty as CardDifficulty)
-          : undefined;
-
-      const card = em.create(Card, {
-        deck,
-        frontText: cardSeed.front,
-        backText: cardSeed.back,
-        difficulty,
-        orderIndex: orderIndex++,
-      });
-
-      em.persist(card);
-      console.log(
-        `    ➕ Card: ${cardSeed.front} → ${cardSeed.back} (${file})`,
-      );
-    }
-
-    await em.flush();
-  }
-}
 
 async function seed() {
   const orm = await MikroORM.init(mikroOrmConfig);
+  const em = orm.em.fork();
 
   try {
-    const languagesPath = path.join(
-      process.cwd(),
-      'seed-data',
-      'languages.json',
-    );
-    const decksDir = path.join(process.cwd(), 'seed-data', 'decks');
+    //const decksPath = path.join(__dirname, '../../seed-data/decks');
+    const decksPath = path.join(process.cwd(), 'seed-data', 'decks');
 
-    await seedLanguages(orm, languagesPath);
-    await seedDecks(orm, decksDir);
+    const files = fs
+      .readdirSync(decksPath)
+      .filter((f) => f.endsWith('-words.json'));
 
-    console.log('✅ Seeding complete.');
+    console.log('Seeding word sets from:', decksPath);
+
+    for (const file of files) {
+      const fullPath = path.join(decksPath, file);
+      const raw = fs.readFileSync(fullPath, 'utf-8');
+      const json = JSON.parse(raw) as WordFile;
+
+      const wordSet = em.create(WordSet, {
+        name: json.name,
+        description: json.description,
+        difficulty: json.difficulty,
+      });
+      em.persist(wordSet);
+
+      for (const cardObj of json.words) {
+        const word = em.create(Word, { wordSet });
+        em.persist(word);
+
+        for (const [langCode, text] of Object.entries(cardObj)) {
+          if (!text) continue;
+
+          const translation = em.create(WordTranslation, {
+            word,
+            languageCode: langCode,
+            text,
+          });
+          em.persist(translation);
+        }
+      }
+
+      await em.flush();
+    }
+
+    console.log('Seeding complete.');
   } catch (err) {
-    console.error('❌ Seeding failed', err);
+    console.error('Seeding failed', err);
+    throw err;
   } finally {
     await orm.close();
   }

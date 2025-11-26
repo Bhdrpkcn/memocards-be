@@ -1,0 +1,28 @@
+{
+  "name": "Hard Words",
+  "description": "Hard difficulty words.",
+  "difficulty": "hard",
+  "words": [
+    {
+      "en": "HARD_apple",
+      "de": "HARD_apfel",
+      "es": "HARD_manzana",
+      "fr": "HARD_pomme",
+      "tr": "HARD_elma"
+    },
+    {
+      "en": "HARD_book",
+      "de": "HARD_buch",
+      "es": "HARD_libro",
+      "fr": "HARD_livre",
+      "tr": "HARD_kitap"
+    },
+    {
+      "en": "HARD_car",
+      "de": "HARD_auto",
+      "es": "HARD_coche",
+      "fr": "HARD_coiture",
+      "tr": "HARD_araba"
+    }
+  ]
+}

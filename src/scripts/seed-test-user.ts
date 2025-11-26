@@ -1,6 +1,5 @@
-// src/scripts/seed-test-user.ts
-
 import { NestFactory } from '@nestjs/core';
+
 import { AppModule } from '../app.module';
 import { UserService } from '../user/user.service';
 

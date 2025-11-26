@@ -6,8 +6,8 @@ import {
   Property,
 } from '@mikro-orm/core';
 
-import { Deck } from './deck.entity';
 import { CardProgress } from './card-progress.entity';
+import { UserWordCollection } from './user-word-collection.entity';
 
 @Entity()
 export class User {
@@ -20,8 +20,8 @@ export class User {
   @Property({ nullable: true })
   name?: string;
 
-  @OneToMany(() => Deck, (deck) => deck.owner)
-  decks = new Collection<Deck>(this);
+  @OneToMany(() => UserWordCollection, (collection) => collection.user)
+  collections = new Collection<UserWordCollection>(this);
 
   @OneToMany(() => CardProgress, (progress) => progress.user)
   cardProgress = new Collection<CardProgress>(this);

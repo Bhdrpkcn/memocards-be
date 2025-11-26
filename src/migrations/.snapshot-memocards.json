@@ -175,6 +175,108 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "scope": {
+          "name": "scope",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "language_code": {
+          "name": "language_code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "user_word_collection",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_word_collection_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "user_word_collection_user_id_foreign": {
+          "constraintName": "user_word_collection_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "public.user_word_collection",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -195,60 +297,73 @@
           "length": 255,
           "mappedType": "string"
         },
-        "from_language_id": {
-          "name": "from_language_id",
-          "type": "int",
+        "difficulty": {
+          "name": "difficulty",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "word_set",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "word_set_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
           "nullable": false,
           "mappedType": "integer"
         },
-        "to_language_id": {
-          "name": "to_language_id",
+        "word_set_id": {
+          "name": "word_set_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
-        },
-        "owner_id": {
-          "name": "owner_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "is_public": {
-          "name": "is_public",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "true",
-          "mappedType": "boolean"
-        },
-        "is_custom": {
-          "name": "is_custom",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
-        },
-        "parent_deck_id": {
-          "name": "parent_deck_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
           "mappedType": "integer"
         },
         "created_at": {
@@ -272,11 +387,11 @@
           "mappedType": "datetime"
         }
       },
-      "name": "deck",
+      "name": "word",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "deck_pkey",
+          "keyName": "word_pkey",
           "columnNames": [
             "id"
           ],
@@ -288,54 +403,16 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "deck_from_language_id_foreign": {
-          "constraintName": "deck_from_language_id_foreign",
+        "word_word_set_id_foreign": {
+          "constraintName": "word_word_set_id_foreign",
           "columnNames": [
-            "from_language_id"
+            "word_set_id"
           ],
-          "localTableName": "public.deck",
+          "localTableName": "public.word",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.language",
-          "updateRule": "cascade"
-        },
-        "deck_to_language_id_foreign": {
-          "constraintName": "deck_to_language_id_foreign",
-          "columnNames": [
-            "to_language_id"
-          ],
-          "localTableName": "public.deck",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.language",
-          "updateRule": "cascade"
-        },
-        "deck_owner_id_foreign": {
-          "constraintName": "deck_owner_id_foreign",
-          "columnNames": [
-            "owner_id"
-          ],
-          "localTableName": "public.deck",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.user",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "deck_parent_deck_id_foreign": {
-          "constraintName": "deck_parent_deck_id_foreign",
-          "columnNames": [
-            "parent_deck_id"
-          ],
-          "localTableName": "public.deck",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.deck",
-          "deleteRule": "set null",
+          "referencedTableName": "public.word_set",
           "updateRule": "cascade"
         }
       },
@@ -352,8 +429,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "deck_id": {
-          "name": "deck_id",
+        "collection_id": {
+          "name": "collection_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -361,63 +438,13 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "front_text": {
-          "name": "front_text",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "back_text": {
-          "name": "back_text",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "extra_info": {
-          "name": "extra_info",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "difficulty": {
-          "name": "difficulty",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "order_index": {
-          "name": "order_index",
+        "word_id": {
+          "name": "word_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "0",
-          "mappedType": "integer"
-        },
-        "created_by_id": {
-          "name": "created_by_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
           "mappedType": "integer"
         },
         "created_at": {
@@ -429,23 +456,13 @@
           "nullable": false,
           "length": 6,
           "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
         }
       },
-      "name": "card",
+      "name": "user_word_collection_item",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "card_pkey",
+          "keyName": "user_word_collection_item_pkey",
           "columnNames": [
             "id"
           ],
@@ -457,29 +474,28 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "card_deck_id_foreign": {
-          "constraintName": "card_deck_id_foreign",
+        "user_word_collection_item_collection_id_foreign": {
+          "constraintName": "user_word_collection_item_collection_id_foreign",
           "columnNames": [
-            "deck_id"
+            "collection_id"
           ],
-          "localTableName": "public.card",
+          "localTableName": "public.user_word_collection_item",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.deck",
+          "referencedTableName": "public.user_word_collection",
           "updateRule": "cascade"
         },
-        "card_created_by_id_foreign": {
-          "constraintName": "card_created_by_id_foreign",
+        "user_word_collection_item_word_id_foreign": {
+          "constraintName": "user_word_collection_item_word_id_foreign",
           "columnNames": [
-            "created_by_id"
+            "word_id"
           ],
-          "localTableName": "public.card",
+          "localTableName": "public.user_word_collection_item",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.user",
-          "deleteRule": "set null",
+          "referencedTableName": "public.word",
           "updateRule": "cascade"
         }
       },
@@ -505,8 +521,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "card_id": {
-          "name": "card_id",
+        "word_id": {
+          "name": "word_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -522,7 +538,7 @@
           "primary": false,
           "nullable": false,
           "length": 255,
-          "default": "'unknown'",
+          "default": "'new'",
           "mappedType": "string"
         },
         "ease_factor": {
@@ -594,16 +610,36 @@
           "nullable": false,
           "length": 6,
           "mappedType": "datetime"
+        },
+        "from_language_code": {
+          "name": "from_language_code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "to_language_code": {
+          "name": "to_language_code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
         }
       },
       "name": "card_progress",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "card_progress_user_id_card_id_unique",
+          "keyName": "card_progress_user_id_word_id_unique",
           "columnNames": [
             "user_id",
-            "card_id"
+            "word_id"
           ],
           "composite": true,
           "constraint": true,
@@ -635,16 +671,88 @@
           "referencedTableName": "public.user",
           "updateRule": "cascade"
         },
-        "card_progress_card_id_foreign": {
-          "constraintName": "card_progress_card_id_foreign",
+        "card_progress_word_id_foreign": {
+          "constraintName": "card_progress_word_id_foreign",
           "columnNames": [
-            "card_id"
+            "word_id"
           ],
           "localTableName": "public.card_progress",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.card",
+          "referencedTableName": "public.word",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "word_id": {
+          "name": "word_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "language_code": {
+          "name": "language_code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        }
+      },
+      "name": "word_translation",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "word_translation_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "word_translation_word_id_foreign": {
+          "constraintName": "word_translation_word_id_foreign",
+          "columnNames": [
+            "word_id"
+          ],
+          "localTableName": "public.word_translation",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.word",
           "updateRule": "cascade"
         }
       },

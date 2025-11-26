@@ -1,7 +1,7 @@
 {
   "info": {
     "_postman_id": "22222222-2222-2222-2222-222222222222",
-    "name": "Memo Backend – Correct Progress & Custom Decks",
+    "name": "Memo Backend – Word Sets, Progress & Collections",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -14,87 +14,51 @@
       "value": "1"
     },
     {
-      "key": "deckId",
+      "key": "wordSetId",
       "value": "1"
     },
     {
-      "key": "cardId",
+      "key": "wordId",
       "value": "1"
     },
     {
-      "key": "randomCardId",
+      "key": "collectionId",
       "value": ""
     },
     {
-      "key": "customDeckId",
-      "value": ""
+      "key": "fromLang",
+      "value": "en"
+    },
+    {
+      "key": "toLang",
+      "value": "tr"
+    },
+    {
+      "key": "difficulty",
+      "value": "easy"
     }
   ],
   "item": [
     {
-      "name": "Decks",
+      "name": "Word Sets",
       "item": [
         {
-          "name": "Get All Decks",
+          "name": "List Word Sets (by from/to)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/decks",
+              "raw": "{{baseUrl}}/word-sets?from={{fromLang}}&to={{toLang}}",
               "host": ["{{baseUrl}}"],
-              "path": ["decks"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Deck By Id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/decks/{{deckId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{deckId}}"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Cards",
-      "item": [
-        {
-          "name": "Get Cards (All)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/decks/{{deckId}}/cards",
-              "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{deckId}}", "cards"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Cards (Known)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/decks/{{deckId}}/cards?userId={{userId}}&status=known",
-              "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{deckId}}", "cards"],
+              "path": ["word-sets"],
               "query": [
                 {
-                  "key": "userId",
-                  "value": "{{userId}}"
+                  "key": "from",
+                  "value": "{{fromLang}}"
                 },
                 {
-                  "key": "status",
-                  "value": "known"
+                  "key": "to",
+                  "value": "{{toLang}}"
                 }
               ]
             }
@@ -102,22 +66,67 @@
           "response": []
         },
         {
-          "name": "Get Cards (Review)",
+          "name": "List Word Sets (by difficulty + from/to)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/decks/{{deckId}}/cards?userId={{userId}}&status=review",
+              "raw": "{{baseUrl}}/word-sets?difficulty={{difficulty}}&from={{fromLang}}&to={{toLang}}",
               "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{deckId}}", "cards"],
+              "path": ["word-sets"],
               "query": [
                 {
-                  "key": "userId",
-                  "value": "{{userId}}"
+                  "key": "difficulty",
+                  "value": "{{difficulty}}"
                 },
                 {
-                  "key": "status",
-                  "value": "review"
+                  "key": "from",
+                  "value": "{{fromLang}}"
+                },
+                {
+                  "key": "to",
+                  "value": "{{toLang}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Words for Word Set (session)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.words && json.words.length > 0) {",
+                  "  const first = json.words[0];",
+                  "  if (first.wordId) {",
+                  "    pm.variables.set('wordId', first.wordId);",
+                  "    console.log('Saved wordId from first word:', first.wordId);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/word-sets/{{wordSetId}}/words?from={{fromLang}}&to={{toLang}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["word-sets", "{{wordSetId}}", "words"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "{{fromLang}}"
+                },
+                {
+                  "key": "to",
+                  "value": "{{toLang}}"
                 }
               ]
             }
@@ -127,10 +136,10 @@
       ]
     },
     {
-      "name": "Progress",
+      "name": "Progress (Words)",
       "item": [
         {
-          "name": "Set Card Status (Known)",
+          "name": "Set Word Status – Known (swipe right)",
           "request": {
             "method": "POST",
             "header": [
@@ -143,18 +152,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"known\"\n}"
+              "raw": "{\n  \"userId\": {{userId}},\n  \"fromLanguageCode\": \"{{fromLang}}\",\n  \"toLanguageCode\": \"{{toLang}}\",\n  \"status\": \"known\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/cards/{{cardId}}/progress",
+              "raw": "{{baseUrl}}/words/{{wordId}}/progress",
               "host": ["{{baseUrl}}"],
-              "path": ["cards", "{{cardId}}", "progress"]
+              "path": ["words", "{{wordId}}", "progress"]
             }
           },
           "response": []
         },
         {
-          "name": "Set Card Status (Review)",
+          "name": "Set Word Status – Review (swipe left)",
           "request": {
             "method": "POST",
             "header": [
@@ -167,12 +176,36 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"review\"\n}"
+              "raw": "{\n  \"userId\": {{userId}},\n  \"fromLanguageCode\": \"{{fromLang}}\",\n  \"toLanguageCode\": \"{{toLang}}\",\n  \"status\": \"review\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/cards/{{cardId}}/progress",
+              "raw": "{{baseUrl}}/words/{{wordId}}/progress",
               "host": ["{{baseUrl}}"],
-              "path": ["cards", "{{cardId}}", "progress"]
+              "path": ["words", "{{wordId}}", "progress"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Word Status – New (reset)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"fromLanguageCode\": \"{{fromLang}}\",\n  \"toLanguageCode\": \"{{toLang}}\",\n  \"status\": \"new\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/words/{{wordId}}/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["words", "{{wordId}}", "progress"]
             }
           },
           "response": []
@@ -180,17 +213,17 @@
       ]
     },
     {
-      "name": "Custom Decks",
+      "name": "Collections (Custom Decks)",
       "item": [
         {
-          "name": "List Custom Decks for Parent Deck",
+          "name": "List All Collections",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/decks/{{deckId}}/custom-decks?userId={{userId}}",
+              "raw": "{{baseUrl}}/collections?userId={{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{deckId}}", "custom-decks"],
+              "path": ["collections"],
               "query": [
                 {
                   "key": "userId",
@@ -202,7 +235,53 @@
           "response": []
         },
         {
-          "name": "Create Custom Deck \"Learning\" (under parent deck)",
+          "name": "List Language Collections (scope=LANGUAGE)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collections?userId={{userId}}&scope=LANGUAGE",
+              "host": ["{{baseUrl}}"],
+              "path": ["collections"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "scope",
+                  "value": "LANGUAGE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Global Collections (scope=GLOBAL)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collections?userId={{userId}}&scope=GLOBAL",
+              "host": ["{{baseUrl}}"],
+              "path": ["collections"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "scope",
+                  "value": "GLOBAL"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Language Collection (e.g. Turkish Collection)",
           "event": [
             {
               "listen": "test",
@@ -211,10 +290,8 @@
                 "exec": [
                   "const json = pm.response.json();",
                   "if (json && json.id) {",
-                  "  pm.variables.set(\"customDeckId\", json.id);",
-                  "  console.log(\"Saved customDeckId:\", json.id);",
-                  "} else {",
-                  "  console.log(\"No id returned from create custom deck\");",
+                  "  pm.variables.set('collectionId', json.id);",
+                  "  console.log('Saved collectionId:', json.id);",
                   "}"
                 ]
               }
@@ -232,59 +309,29 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": {{userId}},\n  \"name\": \"Learning\"\n}"
+              "raw": "{\n  \"userId\": {{userId}},\n  \"name\": \"My Turkish Words\",\n  \"scope\": \"LANGUAGE\",\n  \"languageCode\": \"{{toLang}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/decks/{{deckId}}/custom-decks",
+              "raw": "{{baseUrl}}/collections",
               "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{deckId}}", "custom-decks"]
+              "path": ["collections"]
             }
           },
           "response": []
         },
         {
-          "name": "Get Cards in Custom Deck (All)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/decks/{{customDeckId}}/cards",
-              "host": ["{{baseUrl}}"],
-              "path": ["decks", "{{customDeckId}}", "cards"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Add Random Card from Parent Deck to Custom Deck",
+          "name": "Create Global Collection (e.g. hardtolearn)",
           "event": [
             {
-              "listen": "prerequest",
+              "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.sendRequest({",
-                  "  url: pm.variables.get(\"baseUrl\") + \"/decks/\" + pm.variables.get(\"deckId\") + \"/cards\",",
-                  "  method: \"GET\"",
-                  "}, function (err, res) {",
-                  "  if (err) {",
-                  "    console.log(\"Error fetching cards:\", err);",
-                  "    return;",
-                  "  }",
-                  "",
-                  "  const cards = res.json();",
-                  "",
-                  "  if (!Array.isArray(cards) || cards.length === 0) {",
-                  "    console.log(\"No cards found for this deck\");",
-                  "    return;",
-                  "  }",
-                  "",
-                  "  const randomIndex = Math.floor(Math.random() * cards.length);",
-                  "  const randomCard = cards[randomIndex];",
-                  "",
-                  "  pm.variables.set(\"randomCardId\", randomCard.id);",
-                  "  console.log(\"Selected random card id:\", randomCard.id);",
-                  "});"
+                  "const json = pm.response.json();",
+                  "if (json && json.id) {",
+                  "  pm.variables.set('collectionId', json.id);",
+                  "  console.log('Saved collectionId (GLOBAL):', json.id);",
+                  "}"
                 ]
               }
             }
@@ -301,35 +348,57 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": {{userId}},\n  \"sourceCardId\": {{randomCardId}}\n}"
+              "raw": "{\n  \"userId\": {{userId}},\n  \"name\": \"hardtolearn\",\n  \"scope\": \"GLOBAL\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/decks/custom-decks/{{customDeckId}}/cards",
+              "raw": "{{baseUrl}}/collections",
               "host": ["{{baseUrl}}"],
-              "path": ["decks", "custom-decks", "{{customDeckId}}", "cards"]
+              "path": ["collections"]
             }
           },
           "response": []
         },
         {
-          "name": "Remove Card from Custom Deck",
+          "name": "Add Word to Current Collection (swipe down)",
           "request": {
-            "method": "DELETE",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"wordId\": {{wordId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collections/{{collectionId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["collections", "{{collectionId}}", "items"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Words in Collection (session view)",
+          "request": {
+            "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/decks/custom-decks/{{customDeckId}}/cards/{{cardId}}?userId={{userId}}",
+              "raw": "{{baseUrl}}/collections/{{collectionId}}/words?from={{fromLang}}&to={{toLang}}",
               "host": ["{{baseUrl}}"],
-              "path": [
-                "decks",
-                "custom-decks",
-                "{{customDeckId}}",
-                "cards",
-                "{{cardId}}"
-              ],
+              "path": ["collections", "{{collectionId}}", "words"],
               "query": [
                 {
-                  "key": "userId",
-                  "value": "{{userId}}"
+                  "key": "from",
+                  "value": "{{fromLang}}"
+                },
+                {
+                  "key": "to",
+                  "value": "{{toLang}}"
                 }
               ]
             }
@@ -337,14 +406,14 @@
           "response": []
         },
         {
-          "name": "Delete Custom Deck \"Learning\"",
+          "name": "Delete Collection",
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/decks/custom-decks/{{customDeckId}}?userId={{userId}}",
+              "raw": "{{baseUrl}}/collections/{{collectionId}}?userId={{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["decks", "custom-decks", "{{customDeckId}}"],
+              "path": ["collections", "{{collectionId}}"],
               "query": [
                 {
                   "key": "userId",

@@ -7,16 +7,16 @@ import {
 } from '@mikro-orm/core';
 
 import { User } from './user.entity';
-import { Card } from './card.entity';
+import { Word } from './word.entity';
 
 export enum CardStatusKind {
-  UNKNOWN = 'unknown',
+  NEW = 'new',
   KNOWN = 'known',
   REVIEW = 'review',
 }
 
 @Entity()
-@Unique({ properties: ['user', 'card'] })
+@Unique({ properties: ['user', 'word'] })
 export class CardProgress {
   @PrimaryKey()
   id!: number;
@@ -24,12 +24,12 @@ export class CardProgress {
   @ManyToOne(() => User)
   user!: User;
 
-  @ManyToOne(() => Card)
-  card!: Card;
+  @ManyToOne(() => Word)
+  word!: Word;
 
   // High-level UI status (filtering)
   @Property({ type: 'string' })
-  statusKind: CardStatusKind = CardStatusKind.UNKNOWN;
+  statusKind: CardStatusKind = CardStatusKind.NEW;
 
   // SM-2 fields
   @Property({ type: 'double', default: 2.5 })
@@ -52,4 +52,10 @@ export class CardProgress {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
+
+  @Property()
+  fromLanguageCode!: string;
+
+  @Property()
+  toLanguageCode!: string;
 }

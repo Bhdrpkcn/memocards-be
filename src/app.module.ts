@@ -4,9 +4,9 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import mikroOrmConfig from './mikro-orm.config';
 
 import { UserModule } from './user/user.module';
-import { DeckModule } from './deck/deck.module';
-import { CardModule } from './card/card.module';
 import { ProgressModule } from './progress/progress.module';
+import { WordSetsModule } from './word-sets/word-sets.module';
+import { CollectionsModule } from './collections/collections.module';
 
 @Module({
   imports: [
@@ -15,9 +15,9 @@ import { ProgressModule } from './progress/progress.module';
     }),
     MikroOrmModule.forRoot(mikroOrmConfig),
     UserModule,
-    DeckModule,
-    CardModule,
+    WordSetsModule,
     ProgressModule,
+    CollectionsModule,
     // later: AuthModule
   ],
 })

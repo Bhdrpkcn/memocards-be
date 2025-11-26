@@ -3,8 +3,7 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository } from '@mikro-orm/core';
 
 import { CardProgress, CardStatusKind } from '../entities/card-progress.entity';
-
-import { Card } from '../entities/card.entity';
+import { Word } from '../entities/word.entity';
 import { User } from '../entities/user.entity';
 
 @Injectable()
@@ -13,8 +12,8 @@ export class ProgressService {
     @InjectRepository(CardProgress)
     private readonly progressRepo: EntityRepository<CardProgress>,
 
-    @InjectRepository(Card)
-    private readonly cardRepo: EntityRepository<Card>,
+    @InjectRepository(Word)
+    private readonly wordRepo: EntityRepository<Word>,
 
     @InjectRepository(User)
     private readonly userRepo: EntityRepository<User>,
@@ -22,16 +21,29 @@ export class ProgressService {
     private readonly em: EntityManager,
   ) {}
 
-  async setStatus(userId: number, cardId: number, status: CardStatusKind) {
+  async setStatus(
+    userId: number,
+    wordId: number,
+    fromLanguageCode: string,
+    toLanguageCode: string,
+    status: CardStatusKind,
+  ) {
     const user = await this.userRepo.findOneOrFail({ id: userId });
-    const card = await this.cardRepo.findOneOrFail({ id: cardId });
+    const word = await this.wordRepo.findOneOrFail({ id: wordId });
 
-    let progress = await this.progressRepo.findOne({ user, card });
+    let progress = await this.progressRepo.findOne({
+      user,
+      word,
+      fromLanguageCode,
+      toLanguageCode,
+    });
 
     if (!progress) {
       progress = this.progressRepo.create({
         user,
-        card,
+        word,
+        fromLanguageCode,
+        toLanguageCode,
         statusKind: status,
         easeFactor: 2.5,
         intervalDays: 0,
@@ -39,7 +51,7 @@ export class ProgressService {
       });
     } else {
       progress.statusKind = status;
-      // update EF / interval / repetitions, etc. if you already do that
+      // TODO: here you can later update EF / interval / repetitions if needed
     }
 
     progress.lastReviewedAt = new Date();

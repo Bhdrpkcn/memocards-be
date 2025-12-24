@@ -10,6 +10,22 @@ import {
   CardStatusKind,
 } from 'src/entities/card-progress.entity';
 
+type Difficulty = 'easy' | 'medium' | 'hard';
+
+type WordPairDto = {
+  wordId: number;
+  front: string;
+  back: string;
+};
+
+type WordSetSummaryDto = {
+  id: number;
+  name: string;
+  description?: string;
+  difficulty: Difficulty;
+  wordCount: number;
+};
+
 @Injectable()
 export class WordSetsService {
   constructor(
@@ -26,43 +42,28 @@ export class WordSetsService {
   async listWordSets(params: {
     fromLanguageCode?: string;
     toLanguageCode?: string;
-    difficulty?: 'easy' | 'medium' | 'hard';
-  }) {
+    difficulty?: Difficulty;
+  }): Promise<WordSetSummaryDto[]> {
     const { fromLanguageCode, toLanguageCode, difficulty } = params;
 
     const where: Partial<Pick<WordSet, 'difficulty'>> = {};
-    if (difficulty) {
-      where.difficulty = difficulty;
-    }
+    if (difficulty) where.difficulty = difficulty;
 
     const sets = await this.wordSetRepo.find(where, {
       populate: ['words.translations'],
     });
 
-    if (!fromLanguageCode || !toLanguageCode) {
-      return sets.map((ws) => ({
-        id: ws.id,
-        name: ws.name,
-        description: ws.description,
-        difficulty: ws.difficulty,
-      }));
+    const hasPair = Boolean(fromLanguageCode && toLanguageCode);
+
+    if (!hasPair) {
+      return sets.map((ws) => this.mapWordSetSummary(ws));
     }
 
-    const filtered = sets.filter((ws) =>
-      ws.words.getItems().some((word) => {
-        const langs = word.translations.getItems().map((t) => t.languageCode);
-        return (
-          langs.includes(fromLanguageCode) && langs.includes(toLanguageCode)
-        );
-      }),
-    );
-
-    return filtered.map((ws) => ({
-      id: ws.id,
-      name: ws.name,
-      description: ws.description,
-      difficulty: ws.difficulty,
-    }));
+    return sets
+      .map((ws) =>
+        this.mapWordSetSummary(ws, fromLanguageCode!, toLanguageCode!),
+      )
+      .filter((dto) => dto.wordCount > 0);
   }
 
   async getWordsForSet(
@@ -70,35 +71,13 @@ export class WordSetsService {
     fromLanguageCode: string,
     toLanguageCode: string,
   ) {
-    const wordSet = await this.wordSetRepo.findOne(
-      { id: wordSetId },
-      { populate: ['words.translations'] },
+    const wordSet = await this.findWordSetOrThrow(wordSetId);
+
+    const words = this.extractPairsWords(
+      wordSet,
+      fromLanguageCode,
+      toLanguageCode,
     );
-
-    if (!wordSet) {
-      throw new NotFoundException(`WordSet ${wordSetId} not found`);
-    }
-
-    const words = wordSet.words.getItems().flatMap((word) => {
-      const translations = word.translations.getItems();
-
-      const from = translations.find(
-        (t) => t.languageCode === fromLanguageCode,
-      );
-      const to = translations.find((t) => t.languageCode === toLanguageCode);
-
-      if (!from || !to) {
-        return [];
-      }
-
-      return [
-        {
-          wordId: word.id,
-          front: from.text,
-          back: to.text,
-        },
-      ];
-    });
 
     return {
       wordSetId: wordSet.id,
@@ -117,17 +96,10 @@ export class WordSetsService {
     toLanguageCode: string,
     status: CardStatusKind,
   ) {
-    const wordSet = await this.wordSetRepo.findOne(
-      { id: wordSetId },
-      { populate: ['words.translations'] },
-    );
+    const wordSet = await this.findWordSetOrThrow(wordSetId);
 
-    if (!wordSet) {
-      throw new NotFoundException(`WordSet ${wordSetId} not found`);
-    }
-
-    const words = wordSet.words.getItems();
-    const wordIds = words.map((w) => w.id);
+    const allWords = wordSet.words.getItems();
+    const wordIds = allWords.map((w) => w.id);
 
     if (wordIds.length === 0) {
       return {
@@ -150,29 +122,11 @@ export class WordSetsService {
 
     const progressedWordIds = new Set(progresses.map((p) => p.word.id));
 
-    const filteredWords = words.flatMap((word) => {
-      if (!progressedWordIds.has(word.id)) {
-        return [];
-      }
+    const words = allWords.flatMap((word) => {
+      if (!progressedWordIds.has(word.id)) return [];
 
-      const translations = word.translations.getItems();
-
-      const from = translations.find(
-        (t) => t.languageCode === fromLanguageCode,
-      );
-      const to = translations.find((t) => t.languageCode === toLanguageCode);
-
-      if (!from || !to) {
-        return [];
-      }
-
-      return [
-        {
-          wordId: word.id,
-          front: from.text,
-          back: to.text,
-        },
-      ];
+      const pair = this.extractWordPair(word, fromLanguageCode, toLanguageCode);
+      return pair ? [pair] : [];
     });
 
     return {
@@ -181,7 +135,83 @@ export class WordSetsService {
       difficulty: wordSet.difficulty,
       fromLanguage: fromLanguageCode,
       toLanguage: toLanguageCode,
-      words: filteredWords,
+      words,
+    };
+  }
+
+  private async findWordSetOrThrow(wordSetId: number): Promise<WordSet> {
+    const wordSet = await this.wordSetRepo.findOne(
+      { id: wordSetId },
+      { populate: ['words.translations'] },
+    );
+
+    if (!wordSet) {
+      throw new NotFoundException(`WordSet ${wordSetId} not found`);
+    }
+
+    return wordSet;
+  }
+
+  private mapWordSetSummary(
+    ws: WordSet,
+    fromLanguageCode?: string,
+    toLanguageCode?: string,
+  ): WordSetSummaryDto {
+    return {
+      id: ws.id,
+      name: ws.name,
+      description: ws.description,
+      difficulty: ws.difficulty as Difficulty,
+      wordCount: this.countWordsForPair(ws, fromLanguageCode, toLanguageCode),
+    };
+  }
+
+  private countWordsForPair(
+    ws: WordSet,
+    fromLanguageCode?: string,
+    toLanguageCode?: string,
+  ): number {
+    const words = ws.words.getItems();
+
+    if (!fromLanguageCode || !toLanguageCode) {
+      return words.length;
+    }
+
+    return words.reduce((acc, word) => {
+      const hasPair = Boolean(
+        this.extractWordPair(word, fromLanguageCode, toLanguageCode),
+      );
+      return acc + (hasPair ? 1 : 0);
+    }, 0);
+  }
+
+  private extractPairsWords(
+    ws: WordSet,
+    fromLanguageCode: string,
+    toLanguageCode: string,
+  ): WordPairDto[] {
+    return ws.words.getItems().flatMap((word) => {
+      const pair = this.extractWordPair(word, fromLanguageCode, toLanguageCode);
+      return pair ? [pair] : [];
+    });
+  }
+
+  private extractWordPair(
+    word: Word,
+    fromLanguageCode: string,
+    toLanguageCode: string,
+  ): WordPairDto | null {
+    const translations = word.translations.getItems();
+
+    const from = translations.find((t) => t.languageCode === fromLanguageCode);
+    const to = translations.find((t) => t.languageCode === toLanguageCode);
+
+    if (!from || !to) return null;
+
+    return {
+      wordId: word.id,
+      front: from.text,
+      back: to.text,
     };
   }
 }

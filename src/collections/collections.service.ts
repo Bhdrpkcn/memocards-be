@@ -13,6 +13,10 @@ import {
   UserWordCollection,
 } from '../entities/user-word-collection.entity';
 import { UserWordCollectionItem } from '../entities/user-word-collection-item.entity';
+import {
+  CardProgress,
+  CardStatusKind,
+} from 'src/entities/card-progress.entity';
 
 @Injectable()
 export class CollectionsService {
@@ -28,6 +32,9 @@ export class CollectionsService {
 
     @InjectRepository(Word)
     private readonly wordRepo: EntityRepository<Word>,
+
+    @InjectRepository(CardProgress)
+    private readonly progressRepo: EntityRepository<CardProgress>,
 
     private readonly em: EntityManager,
   ) {}
@@ -148,25 +155,70 @@ export class CollectionsService {
     }
 
     const words = collection.items.getItems().flatMap((item) => {
-      const word = item.word;
-      const translations = word.translations.getItems();
-
-      const from = translations.find(
-        (t) => t.languageCode === fromLanguageCode,
+      const pair = this.extractWordPair(
+        item.word,
+        fromLanguageCode,
+        toLanguageCode,
       );
-      const to = translations.find((t) => t.languageCode === toLanguageCode);
+      return pair ? [pair] : [];
+    });
 
-      if (!from || !to) {
-        return [];
-      }
+    return {
+      collectionId: collection.id,
+      name: collection.name,
+      scope: collection.scope,
+      languageCode: collection.languageCode ?? null,
+      fromLanguage: fromLanguageCode,
+      toLanguage: toLanguageCode,
+      words,
+    };
+  }
 
-      return [
-        {
-          wordId: word.id,
-          front: from.text,
-          back: to.text,
-        },
-      ];
+  async getCollectionWordsByProgress(params: {
+    collectionId: number;
+    userId: number;
+    fromLanguageCode: string;
+    toLanguageCode: string;
+    status: CardStatusKind;
+  }) {
+    const { collectionId, userId, fromLanguageCode, toLanguageCode, status } =
+      params;
+
+    const collection = await this.collectionRepo.findOne(
+      { id: collectionId },
+      { populate: ['items.word.translations'] },
+    );
+
+    if (!collection) {
+      throw new NotFoundException('Collection not found');
+    }
+
+    const items = collection.items.getItems();
+    if (items.length === 0) {
+      return this.emptyResponse(collection, fromLanguageCode, toLanguageCode);
+    }
+
+    const wordIds = items.map((i) => i.word.id);
+
+    const progresses = await this.progressRepo.find({
+      user: userId,
+      word: { $in: wordIds },
+      fromLanguageCode,
+      toLanguageCode,
+      statusKind: status,
+    });
+
+    const allowedWordIds = new Set(progresses.map((p) => p.word.id));
+
+    const words = items.flatMap((item) => {
+      if (!allowedWordIds.has(item.word.id)) return [];
+
+      const pair = this.extractWordPair(
+        item.word,
+        fromLanguageCode,
+        toLanguageCode,
+      );
+      return pair ? [pair] : [];
     });
 
     return {
@@ -203,5 +255,25 @@ export class CollectionsService {
     await this.em.removeAndFlush(collection);
 
     return { success: true };
+  }
+
+  private extractWordPair(word: Word, from: string, to: string) {
+    const translations = word.translations.getItems();
+    const f = translations.find((t) => t.languageCode === from);
+    const t = translations.find((t) => t.languageCode === to);
+    if (!f || !t) return null;
+    return { wordId: word.id, front: f.text, back: t.text };
+  }
+
+  private emptyResponse(c: UserWordCollection, from: string, to: string) {
+    return {
+      collectionId: c.id,
+      name: c.name,
+      scope: c.scope,
+      languageCode: c.languageCode ?? null,
+      fromLanguage: from,
+      toLanguage: to,
+      words: [],
+    };
   }
 }

@@ -9,6 +9,7 @@ import { Word } from '../entities/word.entity';
 import { WordTranslation } from '../entities/word-translation.entity';
 import { UserWordCollection } from 'src/entities/user-word-collection.entity';
 import { UserWordCollectionItem } from 'src/entities/user-word-collection-item.entity';
+import { CardProgress } from 'src/entities/card-progress.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserWordCollectionItem } from 'src/entities/user-word-collection-item.e
       UserWordCollectionItem,
       Word,
       WordTranslation,
+      CardProgress,
     ]),
   ],
   providers: [CollectionsService],

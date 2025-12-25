@@ -10,6 +10,7 @@ import {
 
 import { CollectionsService } from './collections.service';
 import { CollectionScope } from 'src/entities/user-word-collection.entity';
+import { CardStatusKind } from 'src/entities/card-progress.entity';
 
 @Controller('collections')
 export class CollectionsController {
@@ -70,6 +71,23 @@ export class CollectionsController {
       collectionId: Number(id),
       fromLanguageCode,
       toLanguageCode,
+    });
+  }
+
+  @Get(':id/words/progress')
+  async getCollectionWordsByProgress(
+    @Param('id') id: string,
+    @Query('userId') userId: string,
+    @Query('from') fromLanguageCode: string,
+    @Query('to') toLanguageCode: string,
+    @Query('status') status: CardStatusKind,
+  ) {
+    return this.collections.getCollectionWordsByProgress({
+      collectionId: Number(id),
+      userId: Number(userId),
+      fromLanguageCode,
+      toLanguageCode,
+      status,
     });
   }
 

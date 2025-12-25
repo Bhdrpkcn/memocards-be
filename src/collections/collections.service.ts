@@ -48,7 +48,10 @@ export class CollectionsService {
       where.scope = scope;
     }
 
-    const collections = await this.collectionRepo.find(where);
+    const collections = await this.collectionRepo.find(where, {
+      populate: ['items'],
+      orderBy: { createdAt: 'DESC' },
+    });
 
     return collections.map((c) => ({
       id: c.id,
@@ -56,6 +59,7 @@ export class CollectionsService {
       scope: c.scope,
       languageCode: c.languageCode ?? null,
       createdAt: c.createdAt,
+      wordCount: c.items.getItems().length,
     }));
   }
 
@@ -87,6 +91,7 @@ export class CollectionsService {
       name: collection.name,
       scope: collection.scope,
       languageCode: collection.languageCode ?? null,
+      wordCount: 0,
     };
   }
 
@@ -170,6 +175,7 @@ export class CollectionsService {
       languageCode: collection.languageCode ?? null,
       fromLanguage: fromLanguageCode,
       toLanguage: toLanguageCode,
+      wordCount: words.length,
       words,
     };
   }
@@ -228,6 +234,7 @@ export class CollectionsService {
       languageCode: collection.languageCode ?? null,
       fromLanguage: fromLanguageCode,
       toLanguage: toLanguageCode,
+      wordCount: words.length,
       words,
     };
   }
@@ -273,6 +280,7 @@ export class CollectionsService {
       languageCode: c.languageCode ?? null,
       fromLanguage: from,
       toLanguage: to,
+      wordCount: 0,
       words: [],
     };
   }
